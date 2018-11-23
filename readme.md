@@ -14,6 +14,8 @@
 
 [Minutes](/Minutes): minutes for project meetings.
 
+[Problem Formulation](/Problem-Formulation): comparison of previous model and current model.
+
 ## Project Roadmap
 
 ### Term 1
