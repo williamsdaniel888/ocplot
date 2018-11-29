@@ -16,6 +16,8 @@
 
 [Problem Formulation](/Problem-Formulation): comparison of previous model and current model.
 
+[ICLOCS ROS Integration](/ICLOCS-ROS-Integration): files and documentation for the integration of ICLOCS with ROS.
+
 ## Project Roadmap
 
 ### Term 1
@@ -26,16 +28,20 @@
     1. [x] Meeting with second marker (*9 November, 2018*)
 4. [x] Literature review (*16 November, 2018*)
     1. [x] Annotated bibliography (*16 November, 2018*)
-5. [ ] Problem formulation (**due 23 November, 2018**)
+5. [x] Initial problem formulation (**due 23 November, 2018**)
     - Decentralized control with no explicit communication, leader-follower structure
-    - Payload attachment method to be determined (*likely to use cable suspension instead of rigid grasp*)
-    - Optimal trajectory planning for the leader (*pre-planned or real-time to be determined*)
-    - Control scheme for followers to be determined
-6. [ ] Preliminary ICLOCS-ROS integration (**due 21 December, 2018**)
-    - Single quadrotor to follow a straight line trajectory using minimal work
-    - Trajectory planning using ICLOCS-MATLAB
-    - Simulation of evolution using ROS
-    - Visualization using Gazebo
+    - Payload attachment method: cable suspension
+    - Optimal trajectory planning for the leader: real-time MPC
+    - Control scheme for followers: to be determined, possibly using static contracts
+6. [x] Familiarization with ICLOCS2 (**due 30 November, 2018**)
+    - Single quadrotor to follow a straight line trajectory using minimal work 
+7. [ ] Preliminary ICLOCS-ROS integration (**due 14 December, 2018**)
+    - [ ] Trajectory planning using ICLOCS-MATLAB for KAUST dual-agent CPT model (**due 7 December, 2018**)
+    - [ ] Simulation of evolution using ROS (**due 14 December, 2018**)
+    - [ ] Visualization using Gazebo (**due 14 December, 2018**)
+8. [ ] Quantitative problem formulation (**due 7 January, 2019**)
+    - Clarify and document the mathematics of the initial problem formulation
+    - Explicitly document model assumptions and the scope of investigations (e.g. checking performance of decentralized control system with static contracts v. distributed control system with dynamic contracts)
 
 ### Term 2
 1. [ ] ICLOCS-ROS implementation of formulated problem (**due 18 January, 2019**)
@@ -50,3 +56,5 @@
 ## Updates
 
 - Completed literature survey and annotated bibliography (*16 November, 2018*)
+- Completed initial problem formulation (*23 November, 2018*)
+- Installed ICLOCS, investigated usage through worked examples (*29 November, 2018*)
