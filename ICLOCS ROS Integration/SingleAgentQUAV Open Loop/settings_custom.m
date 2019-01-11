@@ -1,4 +1,4 @@
-function options = settings_hp(Ns,Np)
+function options = settings_custom(N)
 
 %SETTINGS - General and solver-specific settings are selected here
 % Unless specified otherwise the options are set using 0 => no and 1 => yes
@@ -37,14 +37,14 @@ function options = settings_hp(Ns,Np)
 % Global LGR method         ('globalLGR')
 % Local LGR method          ('hpLGR')
 % Automatic chosen direct collocation ('AutoDirect')
-options.transcription='hpLGR';
+options.transcription='hermite';
 
 % Result Representation:
 %---------------------------------------
-% As recommended        ('default')
+% As recommended, must be used if 'AutoDirect' is selected        ('default')
 % Direct reconstrunction in correspondence with the transcription method       ('direct')
 % Manually select       ('manual')
-options.resultRep='manual';
+options.resultRep='default';
 
 % Maunal selection of result representation method:
 %---------------------------------------
@@ -52,18 +52,16 @@ options.resultRep='manual';
 %   - Piecewise linear          ('linear'), available for Euler transcription method  
 %   - Piecewise quadratic       ('quadratic'), available for Euler and Trapezoidal transcription methods  
 %   - Piecewise cubic           ('cubic'), available for Hermite-Simpson transcription method  
-%   - Barycentric Lagrange Interpolation ('Barycentric'), available for LGR transcription method  
-%   - Legendre polynomial fitting  ('Legendre'), available for LGR transcription method  
+%   - Legendre polynomials      ('Legendre'), available for LGR transcription method  
 %   - Piecewise Cubic Hermite Interpolating Polynomial with Matlab pchip function        ('pchip'), available for all transcription methods
-options.stateRep='Barycentric';
+options.stateRep='cubic';
 % Input representation
 %   - Piecewise constant        ('constant'), available for all transcription methods
 %   - Piecewise linear          ('linear'), available for all transcription methods
 %   - Piecewise quadratic       ('quadratic'), available for Trapezoidal transcription methods  
-%   - Barycentric Lagrange Interpolation ('Barycentric'), available for LGR transcription method  
-%   - Legendre polynomial fitting  ('Legendre'), available for LGR transcription method  
+%   - Legendre polynomials      ('Legendre'), available for LGR transcription method  
 %   - Piecewise Cubic Hermite Interpolating Polynomial with Matlab pchip function        ('pchip'), available for all transcription methods
-options.inputRep='linear';
+options.inputRep='quadratic';
 
 
 % Derivative generation :
@@ -75,7 +73,7 @@ options.inputRep='linear';
 % Numerical differentiation: finite differences  ('numeric')
 % Analytic differentiation: analytic gradients   ('analytic')
 % Algorithmic differentiation with adigator  ('adigator')
-options.derivatives='analytic';
+options.derivatives='numeric'; 
 
 % Numeric generation of the Hessian:
 %----------------------------------------------------------------
@@ -107,9 +105,9 @@ options.perturbation.J=[];  % Perturbation size for the first derivatives
 options.NLPsolver='ipopt';
 
 % IPOPT settings (if required)
-options.ipopt.tol=5e-6;                        % Desired convergence tolerance (relative). The default value is  1e-8. 
+options.ipopt.tol=1e-9;                        % Desired convergence tolerance (relative). The default value is  1e-8. 
 options.ipopt.print_level=5;                   % Print level. The valid range for this integer option is [0,12] and its default value is 5.
-options.ipopt.max_iter=1000;                   % Maximum number of iterations. The default value is 3000.
+options.ipopt.max_iter=5000;                   % Maximum number of iterations. The default value is 3000.
 
 options.ipopt.mu_strategy ='adaptive';         % Determines which barrier parameter update strategy is to be used. 
                                                % The default value for this string option is "monotone".
@@ -134,24 +132,14 @@ options.ipopt.limited_memory_max_skipping=1;  % Threshold for successive iterati
 
 % WORHP settings needed to be configured with the xml file
 
-
 % Automatic scaling (recommended)
 %---------------------------------------
 options.scaling=1;
 
-% Cold/Warm/Hot Start 
+% Cold/Warm/Hot Start (recommended)
 %---------------------------------------
 options.start='Cold';
 
-% Reorder of LGR Method
-options.reorderLGR=0;
-
-
-% Mesh Refinement Method
-% Increase Polynomial Order        ('IO')
-% Add intervals                    ('AI')
-% Automatic refinement             ('Auto')
-options.MeshRefinement='Auto';
 
 % Output settings
 %---------------------------------------
@@ -183,26 +171,33 @@ options.plot.multipliers=1;
 % The quantity steps/N (N number of control actions) must be a positive
 % integer. 
 % For LGR: Number of LGR points on interval t=[-1,tau_n], tau_n<1
-if length(Ns)==1
-    options.nsegment=Ns; 
-    options.pdegree=Np; 
-else
-    options.npsegment=Ns;
-    options.tau_segment=Np;
-end
+% if length(Ns)==1
+%     options.nsegment=Ns; 
+%     options.pdegree=Np; 
+% else
+%     options.npsegment=Ns;
+%     options.tau_segment=Np;
+% end
 
 % Adaptively spaced segments
 options.adaptseg=0; 
 
 % Minimum time interval
-options.mintimeinterval=0.1; 
-
-
+options.mintimeinterval=1e-9;
 
 % Distribution of integration steps. Set tau=0 for equispaced steps.
 % Otherwise: tau is a vector of length M-1 with 0<tau(i)<1 and sum(tau)=1.
 % For discrete time system  set  tau=0.
 options.tau=0;
+
+options.discErrorTol = [0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000];
+options.constraintErrorTol = [0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.100000000000000,0.100000000000000,0.100000000000000,0.100000000000000,0.100000000000000,0.100000000000000];
+options.nodes=N; 
+%options.discErrorTol = [0.01,0.01,0.01,0.01,0.01,0.01];
+%options.constraintErrorTol = [0.000100000000000000,0.000100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.0100000000000000,0.100000000000000,0.100000000000000,0.100000000000000,0.100000000000000,0.100000000000000,0.100000000000000];
+%options.discErrorTol_Scaled = [2.857142857142857e-04,5.000000000000000e-04,0.005000000000000,5.000000000000000e-04,3.333333333333333e-04,5.000000000000000e-04];
+%options.tau_segment = [2.857142857142857e-04,5.000000000000000e-04,0.005000000000000,5.000000000000000e-04,3.333333333333333e-04,5.000000000000000e-04]; 
+%options.npsegment = [2.857142857142857e-04,5.000000000000000e-04,0.005000000000000,5.000000000000000e-04,3.333333333333333e-04,5.000000000000000e-04];
 
 
 % Multiple shooting settings

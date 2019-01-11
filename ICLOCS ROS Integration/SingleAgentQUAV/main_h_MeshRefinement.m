@@ -22,13 +22,42 @@ clear all;close all;format compact;
 global sol;  
 sol=[];                             % Initialize solution structure
 
-options= settings_h(40);                  % Get options and solver settings 
-[problem,guess]=SingleAgentQUAV;          % Fetch the problem definition
+options= settings_h(4);                  % Get options and solver settings 
+[problem,guess]=BangBang;          % Fetch the problem definition
+errorHistory=zeros(2,length(problem.states.x0));
+npsegmentHistory=zeros(2,1);
+ConstraintErrorHistory=zeros(2,length(problem.constraintErrorTol));
+timeHistory=zeros(1,2);
+iterHistory=zeros(1,2);
+solutionHistory=cell(1,2);
 
-[infoNLP,data,options]=transcribeOCP(problem,guess,options); % Format for NLP solver
-[solution,infoNLP1,data] = solveNLP(infoNLP,data);      % Solve the NLP
-[solution]=output(problem,solution,options,data,4);          % Output solutions
-  
+maxAbsError=1e9;
+i=1; imax=50;
+
+while (any(maxAbsError>problem.states.xErrorTol) || any(maxAbsConstraintError>problem.constraintErrorTol)) && i<=imax    
+    [infoNLP,data,options]=transcribeOCP(problem,guess,options); % Format for NLP solver
+    [solution,status,data] = solveNLP(infoNLP,data);      % Solve the NLP
+    [solution]=output(problem,solution,options,data,4);         % Output solutions
+    
+    maxAbsError=max(abs(solution.Error));
+    maxAbsConstraintError=max(solution.ConstraintError);
+    errorHistory(i,:)=maxAbsError;
+    ConstraintErrorHistory(i,:)=maxAbsConstraintError;
+    timeHistory(i)=solution.computation_time;
+    solutionHistory{i}=solution;
+
+    if (any(maxAbsError>problem.states.xErrorTol) || any(maxAbsConstraintError>problem.constraintErrorTol)) && i<=imax
+        [ options, guess ] = doMeshRefinement( options, problem, guess, data, solution, i );
+    end
+    i=i+1;
+end
+
+MeshRefinementHistory.errorHistory=errorHistory;
+MeshRefinementHistory.timeHistory=timeHistory;
+MeshRefinementHistory.iterHistory=iterHistory;
+MeshRefinementHistory.ConstraintErrorHistory=ConstraintErrorHistory;
+
+
 %%
 xx=linspace(solution.T(1,1),solution.T(end,1),1000);
 figure
@@ -45,8 +74,9 @@ legend('Position [m]','Velocity [m/s]')
 grid on
 
 figure
-plot(solution.T(:,1),speval(solution.Up,1,solution.T),'-o' )
+plot(solution.T(:,1),speval(solution.Up,1,solution.T),'bo' )
 hold on
+plot(xx,speval(solution.Up,1,xx),'b-' )
 plot([solution.T(1,1); solution.tf],[problem.inputs.ul, problem.inputs.ul],'r-' )
 plot([solution.T(1,1); solution.tf],[problem.inputs.uu, problem.inputs.uu],'r-' )
 xlim([0 solution.tf])

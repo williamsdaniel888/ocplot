@@ -1,6 +1,6 @@
-% main_hp_MeshRefinement - Main script to solve the Optimal Control Problem with hp-typed mesh and refinement
+% main_Auto_MeshRefinement - Main script to solve the Optimal Control Problem with automatic mesh selection and refinement
 %
-% BangBang Control (Double Integrator Minimum Time Repositioning) Problem
+% SingleAgentQUAV Control (Double Integrator Minimum Actuator Effort Squared Repositioning) Problem
 %
 % The problem was adapted from Example 4.11 from
 % J. Betts, "Practical Methods for Optimal Control and Estimation Using Nonlinear Programming: Second Edition," Advances in Design and Control, Society for Industrial and Applied Mathematics, 2010.
@@ -17,47 +17,16 @@
 
 %--------------------------------------------------------
 
-clear all;close all;format compact;
-
+clc;clear all;close all;format compact;
 global sol;  
 sol=[];                             % Initialize solution structure
 
-options= settings_hp(1,5);                  % Get options and solver settings 
-[problem,guess]=BangBang;          % Fetch the problem definition
-errorHistory=zeros(2,length(problem.states.x0));
-npsegmentHistory=zeros(2,1);
-ConstraintErrorHistory=zeros(2,length(problem.constraintErrorTol));
-timeHistory=zeros(1,2);
-iterHistory=zeros(1,2);
-solutionHistory=cell(1,2);
+options= settings_Auto(10);                  % Get options and solver settings 
+[problem,guess]=SingleAgentQUAV;          % Fetch the problem definition
 
-maxAbsError=1e9;
-i=1; imax=10;
-minItervalScale=1;
-while (any(maxAbsError>problem.states.xErrorTol) || any(maxAbsConstraintError>problem.constraintErrorTol)) && i<=imax
-   
-    [infoNLP,data,options]=transcribeOCP(problem,guess,options); % Format for NLP solver
-    [solution,status,data] = solveNLP(infoNLP,data);      % Solve the NLP
-    [solution]=output(problem,solution,options,data,4);         % Output solutions
-    
-    maxAbsError=max(abs(solution.Error));
-    maxAbsConstraintError=max(solution.ConstraintError);
-    errorHistory(i,:)=maxAbsError;
-    iterHistory(i)=status.iter;
-    ConstraintErrorHistory(i,:)=maxAbsConstraintError;
-    timeHistory(i)=solution.computation_time;
-    solutionHistory{i}=solution;
-  
-    if (any(maxAbsError>problem.states.xErrorTol) || any(maxAbsConstraintError>problem.constraintErrorTol)) && i<=imax
-        [ options, guess ] = doMeshRefinement( options, problem, guess, data, solution, i );
-    end
-    i=i+1;
-end
-
-MeshRefinementHistory.errorHistory=errorHistory;
-MeshRefinementHistory.timeHistory=timeHistory;
-MeshRefinementHistory.iterHistory=iterHistory;
-MeshRefinementHistory.ConstraintErrorHistory=ConstraintErrorHistory;
+[infoNLP,data,options]=transcribeOCP(problem,guess,options); % Format for NLP solver
+[solution,status,data] = solveNLP(infoNLP,data);      % Solve the NLP
+[solution]=output(problem,solution,options,data,4);         % Output solutions
 
 %%
 xx=linspace(solution.T(1,1),solution.tf,1000);
