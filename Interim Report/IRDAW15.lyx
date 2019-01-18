@@ -27,6 +27,7 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing onehalf
 \use_hyperref false
 \papersize default
 \use_geometry false
@@ -75,14 +76,1281 @@ Final Year Project: Interim Report
 \end_layout
 
 \begin_layout Author
-Daniel Atticus Williams, CID 01044837
-\end_layout
+Daniel Atticus Williams
+\begin_inset Newline newline
+\end_inset
 
-\begin_layout Date
-01/18/19
+CID 01044837
 \end_layout
 
 \begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList figure
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset FloatList table
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Project Specification
+\end_layout
+
+\begin_layout Standard
+This final year project (FYP) addresses the problem of optimal control for
+ cooperative transportation of a payload (CPT) using unmanned aerial vehicles
+ (UAVs).
+ The FYP was inspired by previous research conducted as part of a summer
+ placement under the supervision of Professor Jeff Shamma of RISC Lab at
+ the King Abdullah University of Science and Technology.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-1"
+
+\end_inset
+
+ The goal of the earlier project was to devise a decentralized control algorithm
+ for autonomous cooperative transportation of a payload (CPT) by two unmanned
+ aerial vehicles (UAVs).
+ The proposed control scheme relied on one UAV as a ‘leader’ agent tracking
+ a preset trajectory, and the second UAV as a ‘follower’ agent implementing
+ a simple PID controller.
+\end_layout
+
+\begin_layout Standard
+Under the supervision of Dr Eric Kerrigan and Ian McInerney, I am re-examining
+ the CPT problem from an optimal control perspective.
+ The primary goal of the FYP will be to design and simulate a novel distributed
+ optimal controller for a multi-agent CPT scheme, relying on model predictive
+ control (MPC) for real-time optimization of the agents’ trajectories, obstacle
+ avoidance and prevention of inter-agent collisions.
+ There are three intermediate objectives for this FYP.
+ First, the optimal controller will be implemented using a software package
+ developed by Dr Kerrigan, Yuanbo Nie, and Omar Faqir (ICLOCS2), and its
+ performance will be simulated numerically using Simulink.
+ Second, I will develop and document a software interface for ICLOCS2 in
+ a closed control loop with agent nodes that are running inside the Robot
+ Operating System (ROS) environment.
+ Finally, I will create visualizations of missions under the proposed CPT
+ scheme using the Gazebo simulation package for ROS.
+ 
+\end_layout
+
+\begin_layout Standard
+Alongside the stated project goals and objectives, the FYP will require
+ the following deliverables: 
+\end_layout
+
+\begin_layout Enumerate
+A survey of academic literature focusing on multi-agent CPT schemes using
+ UAVs.
+\end_layout
+
+\begin_layout Enumerate
+Design requirements for a distributed optimal multi-agent CPT scheme.
+\end_layout
+
+\begin_layout Enumerate
+A scheme that satisfies the identified design requirements.
+\end_layout
+
+\begin_layout Enumerate
+A mathematical formulation of the problem.
+\end_layout
+
+\begin_layout Enumerate
+Numerical simulations of the system with ICLOCS2 in Simulink.
+\end_layout
+
+\begin_layout Enumerate
+Documentation for the software interface between ICLOCS2 and ROS.
+\end_layout
+
+\begin_layout Enumerate
+Demonstration of a successful mission using Gazebo.
+\end_layout
+
+\begin_layout Enumerate
+Submission of a final report documenting the FYP.
+\end_layout
+
+\begin_layout Enumerate
+Presentation of work to academic staff.
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Background
+\end_layout
+
+\begin_layout Subsection
+Cooperative Payload Transportation
+\end_layout
+
+\begin_layout Standard
+The transportation of objects is a fundamental task in the field of robotics.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-2"
+
+\end_inset
+
+ As a subset of the manipulation problem, payload transportation is conducted
+ by mobile agents, typically unmanned aerial vehicles (UAVs).
+ Aerial payload transportation using single-agent systems has been studied
+ in numerous sources, however such systems are inherently limited by the
+ carrying capabilities of the agent’s hardware.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-3"
+
+\end_inset
+
+ In recent years, increasing interest in aerial payload transportation from
+ the commercial, industrial and military sectors has motivated the development
+ of cooperative payload transportation (CPT) schemes.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-5"
+
+\end_inset
+
+ CPT schemes exploit multiple agents’ carrying capabilities to transport
+ bulky and heavy objects.
+ This allows for a wider set of possible transportation maneuvers at the
+ cost of an increased model complexity.
+\end_layout
+
+\begin_layout Standard
+CPT schemes may be classified according to aspects of their design.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-5"
+
+\end_inset
+
+ An important design choice is the agent type: UAVs allow agile motion in
+ three dimensions but may have shorter mission durations than terrestrial
+ vehicles due to their limited onboard battery life.
+ One must also consider the composition of the formation, i.e.
+ whether the agents will have a uniform or heterogeneous design (perhaps
+ reflecting task specializations, as seen in 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-6"
+
+\end_inset
+
+).
+ 
+\end_layout
+
+\begin_layout Standard
+After deciding on the formation structure, a method for interacting with
+ the payload can be chosen.
+ Inspired by research on slung-load systems, suspension by cables permits
+ versatile tensile manipulation in three dimensions.
+ Used less frequently in CPT, rigid attachment to the agents’ bodies allows
+ direct inference of the payload’s location but may not be suitable for
+ all payload sizes and shapes.
+\end_layout
+
+\begin_layout Standard
+Finally, an appropriate control architecture must be selected.
+ 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "key-7"
+
+\end_inset
+
+ Centralized control algorithms require decisions to be made in one location
+ and communicated to all agents.
+ Distributed control algorithms involve each agent making decisions with
+ some communication with peers.
+ Decentralized control algorithms involve each agent making their own decisions
+ without communicating with peers.
+ 
+\end_layout
+
+\begin_layout Subsection
+Survey of CPT Literature
+\end_layout
+
+\begin_layout Subsubsection
+Design Requirements for CPT Schemes
+\end_layout
+
+\begin_layout Standard
+The literature survey identified several important requirements for UAV-based
+ CPT systems.
+ In analyzing the feasibility of UAV delivery systems, d’Andrea emphasized
+ a need for robustness in a range of environments and minimal reliance on
+ external infrastructure [d’Andrea].
+ Motivated by the latter factor, eliminating dependence on explicit communicatio
+n between agents (and therefore moving towards a decentralized control architect
+ure) is explored in [Gassner17].
+ Tomic et al.
+ explicitly identified the following design requirements [Tomic12]:
+\end_layout
+
+\begin_layout Itemize
+Operability in unstructured indoor and outdoor environments
+\end_layout
+
+\begin_layout Itemize
+Robust flight capabilities
+\end_layout
+
+\begin_layout Itemize
+Autonomous, onboard decision making (this requires control algorithms with
+ lower computational complexity [TangKumar15])
+\end_layout
+
+\begin_layout Itemize
+Modular and flexible sensing and control capabilities
+\end_layout
+
+\begin_layout Itemize
+No dependence on external navigation aids 
+\end_layout
+
+\begin_layout Standard
+Specific to UAV-based CPT schemes, Gimenez et al.
+ ordered several common objectives in a hierarchy [Gimenez18]:
+\end_layout
+
+\begin_layout Enumerate
+Obstacle avoidance (also featured in [TangKumar15] and [Ruggiero18-Intro])
+\end_layout
+
+\begin_layout Enumerate
+Secondary objectives:
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Avoid collisions and excessive separation between agents
+\end_layout
+
+\begin_layout Enumerate
+Evenly distribute the payload weight between vehicles
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Reduce oscillations caused by external disturbances such as wind (this is
+ incompatible with fast and aggressive agent maneuvers [TangKumar15]) 
+\end_layout
+
+\begin_layout Standard
+Once the objectives are known, Gimenez et al.
+ recommend that an appropriate control solution may be chosen.
+ If an optimal control algorithm is used, one may seek to minimize mission
+ duration and actuator effort in order to conserve battery life.
+\end_layout
+
+\begin_layout Subsubsection
+Existing CPT Schemes and Limitations
+\end_layout
+
+\begin_layout Standard
+A selection of UAV- and terrestrial-based schemes have been proposed in
+ the literature, representing various combinations of interaction methods,
+ degrees of control centralization, and formation control algorithms.
+ 
+\end_layout
+
+\begin_layout Standard
+A prominent trend in UAV-based CPT research has seen a shift from centralized
+ control to decentralized control.
+ The reliance of centralized and distributed architectures on communication
+ entails channel latencies, susceptibility to infrastructure failure, and
+ increased consumption of power and spectrum.
+ Each of these consequences can be avoided if dependence on explicit communicati
+on is eliminated [FR DAW15].
+ Nevertheless, fully-decentralized architectures must therefore rely on
+ alternative methods of mutual localization that are more computationally-comple
+x.
+ 
+\end_layout
+
+\begin_layout Standard
+All implementations of CPT schemes make certain operational assumptions.
+ Common environmental assumptions include the absence of obstacles and external
+ disturbances such as wind.
+ Most CPT schemes assume external infrastructure for agent localization
+ ([Tognon18] is a notable exception).
+ Finally, few CPT schemes perform trajectory optimization in real-time (among
+ them [Verginis18] and [Tagliabue17]).
+ 
+\end_layout
+
+\begin_layout Standard
+Among CPT schemes using cable-suspension, all three types of control architectur
+es have been implemented.
+ Centralized architectures relying on PID controllers are proposed in Michael10,
+ Gimenez18 and Pereira18, while a nonlinear PD controller is proposed in
+ Lee14.
+ Decentralized control underpins several recent proposals involving LQR
+ (Gassner17, Shirani18), admittance control (Tognon18), a bio-inspired algorithm
+ (Gabellieri18) and MPC (Tagliabue17).
+ Fewer proposals have implemented a distributed control architecture; Cotsakis18
+ use a PD controller, while Klausen18 adopt a passivity-based approach.
+ Among CPT schemes using rigid payload grasping, a centralized control architect
+ure relying on LQR is presented in [Tan18], while a distributed wrench controlle
+r is proposed in Wang18.
+ A notable feature of the distributed control architecture in Lee18 is the
+ online estimation of the payload’s mass and inertial properties.
+ 
+\end_layout
+
+\begin_layout Standard
+A small number of proposed CPT schemes involve terrestrial vehicles.
+ Ebel and Eberhard18 propose a distributed architecture for collaborative
+ pushing of an object by mobile robots, relying on PI controllers for agent
+ propulsion and penalty forces for inter-agent collision avoidance.
+ Babaie and Ehyaie17 study a decentralized sliding mode controller for a
+ rigidly-grasped payload, while Verginis18 implement a distributed controller
+ using receding horizon MPC.
+ Notably the latter technique has not yet been applied to an aerial CPT
+ scheme.
+ 
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Problem Statement
+\end_layout
+
+\begin_layout Standard
+This FYP focuses on aerial CPT using a homogeneous swarm of UAV agents.
+ For simplicity of modeling, the payload is assumed to have a rigid, homogeneous
+ composition and the shape of a rectangular prism.
+ The agents will be attached to the payload using cables of identical compositio
+n and length, positioned symmetrically around the payload’s center of mass
+ on the payload’s top face.
+ Figure X depicts such a configuration using three agents.
+ 
+\end_layout
+
+\begin_layout Standard
+Figure X – Three-agent config, top view and side view 
+\end_layout
+
+\begin_layout Standard
+The proposed CPT scheme will require three distinct flight modes for takeoff,
+ carrying the payload, and landing safely.
+ Inspired by the work of Verginis18, these flight modes will be implemented
+ using a distributed optimal control architecture.
+ Each agent will run an onboard receding horizon MPC algorithm for planning
+ and tracking an optimized trajectory.
+ The onboard controller will use a double-integrator model of the agent’s
+ dynamics, motivated by the widespread contemporary usage of flight controllers
+ such as the Pixhawk [FR DAW15].
+ The optimization’s stage cost will be the sum of the squared actuator effort
+ in three dimensions, and the terminal cost will be the duration of the
+ mission.
+\end_layout
+
+\begin_layout Standard
+Figure XX – Diagram of Zones 
+\end_layout
+
+\begin_layout Standard
+Path constraints will be imposed on each agent in the form of zone contracts
+ between neighbors.
+ As depicted in Figure XX, each agent will communicate its state with its
+ neighbors and calculate a zone in which it can move safely.
+ Requiring minimal explicit communication, this will prevent collisions
+ between agents and eliminate the need for neighbor state estimation, further
+ reducing the computational complexity of the onboard control algorithm.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Implementation
+\end_layout
+
+\begin_layout Subsection
+Completed Work
+\end_layout
+
+\begin_layout Standard
+Work completed for the FYP to date has covered three topics: reviewing the
+ state of the art, familiarization with the use of ICLOCS2 for trajectory
+ optimization and mission simulation, and preparation for the present report.
+ With the completion of the present report, the first, second and third
+ objectives of the FYP have been achieved.
+\end_layout
+
+\begin_layout Standard
+The initial phase of the FYP focused on gathering information about the
+ state of the art, with the literature survey completed on the 16th of November,
+ 2018, followed by a preliminary definition of the problem for the FYP on
+ the 23rd of November, 2018.
+\end_layout
+
+\begin_layout Standard
+Thereafter, the focus of the FYP shifted towards using ICLOCS2 to run simulation
+s of optimal control applications, first by studying examples provided on
+ the ICLOCS2 website [ICLOCS2], then by using ICLOCS2 to solve the minimum-work
+ single-agent aerial locomotion problem.
+ Due to an initial lack of familiarity with the software package and computation
+al limitations, the basic implementation of the open-loop control problem
+ (i.e.
+ planning the entire trajectory before the mission) was completed on the
+ 7th of December, 2018, with further code refinement and introduction of
+ spatial obstacles extending into the first week of Spring Term (see figures
+ XXX and XXXX).
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Since the start of the Spring Term, these issues have been mitigated by
+ access to a more powerful workstation in the Robot Intelligence Lab at
+ Imperial College London.
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Figure XXX – Minimum-work Single-agent Locomotion – Open-loop planning 
+\end_layout
+
+\begin_layout Standard
+Figure XXXX – Minimum-work Single-agent Locomotion – Open-loop planning
+ with obstacles 
+\end_layout
+
+\begin_layout Standard
+The closed-loop control problem was subsequently implemented in Simulink
+ on the 14th of January, running ICLOCS2 as a trajectory optimization block
+ in a feedback loop with a double-integrator model for the single-agent
+ dynamics (see figure XXXXX).
+ Troubleshooting delays with the simulation’s runtime is currently ongoing.
+\end_layout
+
+\begin_layout Standard
+Figure XXXXX – Minimum-work Single-agent Locomotion – Block diagram for
+ closed-loop planning
+\end_layout
+
+\begin_layout Standard
+Parallel to the technical work for the FYP, twice-weekly meetings with Dr
+ Eric Kerrigan and Ian McInerney have assisted in defining the focus of
+ the FYP and reflecting on the performance issues of the simulations to
+ date.
+ 
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Proposed Work
+\end_layout
+
+\begin_layout Standard
+Building on the problem statement outlined in the present report, renewed
+ focus will be placed on generating a mathematical formulation of the problem
+ and proposed solution.
+ This will involve defining a coordinate scheme for agents and the payload,
+ creating an approximation of the dynamics of the agents and payload, modeling
+ the mechanical interactions between agents and the payload, and defining
+ a communication protocol between agents.
+ The mathematical formulation of the entire system (the fourth FYP objective)
+ is due for completion by the 1st of February, 2019.
+ 
+\end_layout
+
+\begin_layout Standard
+Further work in troubleshooting the Simulink simulations of the closed-loop
+ single-agent aerial locomotion system is due for completion by the 14th
+ of February, 2019.
+ The preliminary interface between ICLOCS and Simulink with the ROS environment
+ will model the same single-agent system, allowing for simulations using
+ Simulink (due 19th of February, 2019) and visualization of the system evolution
+ using Gazebo (20th of February, 2019).
+ Documentation for the software interface with ROS will be completed by
+ the 21st of February, 2019, and shared with the ICLOCS2 maintenance team
+ (the sixth FYP objective).
+ 
+\end_layout
+
+\begin_layout Standard
+After the ICLOCS2-ROS software interface is developed, tested and documented,
+ the final phase of technical work will commence.
+ Numerical simulations of the proposed CPT scheme will be conducted in Simulink
+ (the fifth FYP objective) and are due for completion by the 14th of March,
+ 2019.
+ Once system performance is verified, the proposed CPT scheme will be simulated
+ in Simulink with the ICLOCS2-ROS interface (20th of March, 2019).
+ The seventh objective, visualization of a successful mission under the
+ proposed CPT scheme, will immediately follow on the 21st of March, 2019.
+ 
+\end_layout
+
+\begin_layout Standard
+Preparation for the final report and presentation will begin over the Easter
+ holidays, with the abstract and draft of the report to be submitted by
+ the 3rd of June, 2019.
+ Following discussions with Dr Eric Kerrigan and Ian McInerney, a revised
+ copy of the final report will be submitted by the 19th of June (the eighth
+ FYP objective).
+ The final FYP objective, the presentation of work to academic staff, is
+ expected to happen between the 24th and 26th of June, 2019, with the exact
+ date and time to be confirmed at a later date.
+ 
+\end_layout
+
+\begin_layout Standard
+Two important issues are anticipated.
+ Increasingly crowded conditions in the Robot Intelligence Lab may adversely
+ impact my access to the workstation during business hours.
+ This can be mitigated by shifting planned work to early morning time slots
+ and conducting all but the most essential work on my laptop computer.
+ More importantly, given the novelty of the software implementation component
+ of this FYP, delays in troubleshooting issues with ICLOCS2 and ROS are
+ likely.
+ Due to the linear nature of the FYP’s objectives and planned work schedule,
+ delays will have a multiplicative impact on subsequent planned work.
+ To minimize the possibility of obstruction, the work has been divided into
+ smaller units and tolerance has been built into the schedule.
+ To prevent serious blockages, I have met regularly with Dr Eric Kerrigan
+ and Ian McInerney for advice on resolving any arising issues and consulted
+ Yuanbo Nie for further assistance with ICLOCS2.
+ 
+\end_layout
+
+\begin_layout Subsection
+Proposed Work Schedule
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Proposed Work Schedule
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Tabular
+<lyxtabular version="3" rows="12" columns="3">
+<features booktabs="true" tabularvalignment="middle" tabularwidth="100col%">
+<column alignment="left" valignment="top" width="25col%">
+<column alignment="left" valignment="top" width="50col%">
+<column alignment="left" valignment="top" width="25col%">
+<row>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Stage
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Task
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Deadline
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Problem Formulation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Mathematical formulation of the problem and proposed solution
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1 February 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Developing the ICLOCS2-ROS Interface
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Closed-loop trajectory planning for single-agent aerial transportation using
+ ICLOCS2 and Simulink
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14 February 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Simulations using ICLOCS2 and Simulink with ROS in closed-loop
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19 February 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Visualization of simulations using Gazebo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20 February 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Documentation of software interface between ICLOCS2 and ROS
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21 February 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Implementing the Proposed CPT Scheme
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Closed-loop trajectory planning for proposed CPT scheme using ICLOCS2 and
+ Simulink
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+14 March 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Simulations using ICLOCS2 and Simulink with ROS in closed-loop
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+20 March 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Visualization of simulations using Gazebo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+21 March 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="3" alignment="left" valignment="middle" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Final Report and Presentation
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Abstract and draft of report
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3 June 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Revised report
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+19 June 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell multirow="4" alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Presentation of Results
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+24-26 June 2019
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Evaluation Plan
+\end_layout
+
+\begin_layout Standard
+The success of the FYP will depend on verified completion of each major
+ task identified in the proposed work schedule.
+ Table X outlines the relevant methods that will be used to verify the technical
+ soundness and correct operation of each component of the proposed solution.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float table
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Evaluation Methods for Proposed Work
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Safety, Legal and Ethical Considerations
+\end_layout
+
+\begin_layout Standard
+Given the software orientation of the FYP, there are no significant physical
+ hazards.
+ Nevertheless, principles of occupational health and safety when working
+ on a computer (such as maintaining adequate lighting and posture) should
+ be followed.
+ Future implementation of the results of the FYP using hardware will need
+ to be able to safely handle humans in the environment, hence attention
+ should be given to the UK Drone Code.
+\end_layout
+
+\begin_layout Standard
+An important legal issue is the use of others’ intellectual property for
+ the development and execution of the proposed CPT scheme.
+ For the FYP, MATLAB and Simulink are used extensively as platforms for
+ prototyping and testing.
+ Due to the exclusively academic nature of the FYP, such research is covered
+ by Imperial College’s academic software licence.
+ Trajectory optimization is provided by ICLOCS2, which in turn relies on
+ the Ipopt software package.
+ Both are released under modified BSD licences, which can be respected by
+ reproducing the provided copyright notices, conditions and disclaimers
+ in all source code and documentation for binaries.
+ Such licences do not prevent future commercialization of derivative works.
+ 
+\end_layout
+
+\begin_layout Standard
+Future implementations of the proposed CPT scheme will need to adhere to
+ legal regulations concerning safe operation of UAVs.
+ The UK government has released guidelines for civilians that prohibit UAV
+ operation in certain locations (airports, built-up areas, crowds, areas
+ within 50m of a person, vehicle or building not under control of the operator).
+ In the more distant future, legal regulations for commercial fleets of
+ CPT hardware concerning noise, aerial traffic, and accident responsibility
+ will need to be developed by policy makers, analogous to the UK Drone Code
+ for individuals.
+ 
+\end_layout
+
+\begin_layout Standard
+The development and application of CPT schemes raises several ethical issues.
+ Strong interest from the military sector in this technology could lead
+ to the incorporation of CPT into advanced weaponry but could also enable
+ more rapid and effective search and rescue missions in the event of natural
+ disasters.
+ Increasing prevalence of CPT schemes in commercial activities could also
+ have implications for delivery and logistics companies, with potential
+ unemployment for porters, couriers and delivery drivers.
+ For the foreseeable future, it is likely that only small deliveries over
+ short distances will be feasible due to the limitations of current battery
+ technology.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-1"
+
+\end_inset
+
+D.A.
+ Williams, 
+\begin_inset Quotes eld
+\end_inset
+
+Research Placement Final Report
+\begin_inset Quotes erd
+\end_inset
+
+, RISC Lab., KAUST, Thuwal, KSA.
+ Final Rep., 19 Aug.
+ 2018.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-2"
+
+\end_inset
+
+S.
+ Gupte, P.
+ I.
+ T.
+ Mohandas and J.
+ M.
+ Conrad, 
+\begin_inset Quotes eld
+\end_inset
+
+A survey of quadrotor Unmanned Aerial Vehicles,
+\begin_inset Quotes erd
+\end_inset
+
+ 2012 Proceedings of IEEE Southeastcon, Orlando, FL, 2012, pp.
+ 1-6.
+ doi: 10.1109/SECon.2012.6196930
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-3"
+
+\end_inset
+
+F.
+ Ruggiero, V.
+ Lippiello and A.
+ Ollero, 
+\begin_inset Quotes eld
+\end_inset
+
+Introduction to the Special Issue on Aerial Manipulation,
+\begin_inset Quotes erd
+\end_inset
+
+ in IEEE Robotics and Automation Letters, vol.
+ 3, no.
+ 3, pp.
+ 2734-2737, July 2018.
+ doi: 10.1109/LRA.2018.2830750
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-4"
+
+\end_inset
+
+F.
+ Ruggiero, V.
+ Lippiello and A.
+ Ollero, 
+\begin_inset Quotes eld
+\end_inset
+
+Aerial Manipulation: A Literature Review,
+\begin_inset Quotes erd
+\end_inset
+
+ in IEEE Robotics and Automation Letters, vol.
+ 3, no.
+ 3, pp.
+ 1957-1964, July 2018.
+ doi: 10.1109/LRA.2018.2808541
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-5"
+
+\end_inset
+
+H.B.
+ Khamseh, F.
+ Janabi-Sharifi and A.
+ Abdessameud, 
+\begin_inset Quotes eld
+\end_inset
+
+Aerial manipulation — A literature survey,
+\begin_inset Quotes erd
+\end_inset
+
+ in Robotics and Autonomous Systems, vol.
+ 107, pp.
+ 221-235, Sept.
+ 2018.
+ doi: 10.1016/j.robot.2018.06.012
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-6"
+
+\end_inset
+
+C.
+ Gabellieri et al., 
+\begin_inset Quotes eld
+\end_inset
+
+A Study on Force-Based Collaboration in Flying Swarms,
+\begin_inset Quotes erd
+\end_inset
+
+ In Proc.
+ 11th International Conference, ANTS 2018, Rome, Italy, 2018, pp.
+ 3-15.
+ doi: 10.1007/978-3-030-00533-7_1
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-7"
+
+\end_inset
+
+M.
+ Farina and G.
+ Ferrari Trecate.
+ Lecture, Topic: 
+\begin_inset Quotes eld
+\end_inset
+
+Decentralized and distributed control: Introduction
+\begin_inset Quotes erd
+\end_inset
+
+, EECI-HYCON2 Graduate School on Control 2012, Supélec, France, 2012.
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+key "key-8"
+
+\end_inset
+
 
 \end_layout
 
