@@ -201,175 +201,7 @@ gantttitlelist{1,...,22}{1}
 
 	
 \backslash
-ganttgroup{Basic CPT Scheme Implementation}{1}{16} 
-\backslash
-
-\backslash
-
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Achieve agent position sensing in Simscape}{1}{3} 
-\backslash
-
-\backslash
- %1
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Achieve agent actuation in Simscape}{1}{3} 
-\backslash
-
-\backslash
- %2
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Create Simulink code block for Newtonian model}{1}{3} 
-\backslash
-
-\backslash
- %3
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Simulate Newtonian model in ICLOCS2-Simulink}{4}{5} 
-\backslash
-
-\backslash
- %4
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Linearize Newtonian model}{8}{10} 
-\backslash
-
-\backslash
- %5
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Investigate control properties of linearized model}{10}{10} 
-\backslash
-
-\backslash
- %6
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Simulate linearized model in ICLOCS2-Simulink}{11}{11} 
-\backslash
-
-\backslash
- %7
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Identify ICLOCS2 data flows}{9}{9} 
-\backslash
-
-\backslash
- %8
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Create functions for handling agent zones}{10}{10} 
-\backslash
-
-\backslash
- %9
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Create Simulink block for Simscape model}{11}{11} 
-\backslash
-
-\backslash
- %10
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Simulate Simscape model in ICLOCS2-Simulink}{11}{14} 
-\backslash
-
-\backslash
- %11
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttbar{Compare behavior of Newtonian, Linearized Newtonian and Simscape
- models}{15}{16} 
-\backslash
-
-\backslash
- %12
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttgroup{Centralized Control, 2D Obstacle-Free Trajectory}{15}{21} 
+ganttgroup{ICLOCS2-ROS Interface}{15}{40} 
 \backslash
 
 \backslash
@@ -380,7 +212,7 @@ ganttgroup{Centralized Control, 2D Obstacle-Free Trajectory}{15}{21}
 
 	
 \backslash
-ganttgroup{Individual Control, 2D Obstacle-Free Trajectory}{22}{28} 
+ganttbar{Gazebo model construction}{15}{26} 
 \backslash
 
 \backslash
@@ -391,7 +223,7 @@ ganttgroup{Individual Control, 2D Obstacle-Free Trajectory}{22}{28}
 
 	
 \backslash
-ganttgroup{Individual Control, 3D Obstructed Trajectory}{29}{35} 
+ganttbar{Create communication channels between ROS and MATLAB}{22}{29} 
 \backslash
 
 \backslash
@@ -402,11 +234,29 @@ ganttgroup{Individual Control, 3D Obstructed Trajectory}{29}{35}
 
 	
 \backslash
-ganttgroup{Distinct Flight Modes}{36}{40} 
+ganttbar{Create Simulink block for the Gazebo model}{30}{32} 
 \backslash
 
 \backslash
 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+ganttbar{Simulate Gazebo model in ICLOCS2-Simulink}{33}{40} 
+\backslash
+
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+ganttbar{Create package and documentation for ROS-ICLOCS2 interface}{32}{37}
 \end_layout
 
 \begin_layout Plain Layout
@@ -417,14 +267,14 @@ ganttgroup{Distinct Flight Modes}{36}{40}
 
 	
 \backslash
-ganttlink{elem1}{elem10}
+ganttlink{elem1}{elem3}
 \end_layout
 
 \begin_layout Plain Layout
 
 	
 \backslash
-ganttlink{elem2}{elem10}
+ganttlink{elem2}{elem3}
 \end_layout
 
 \begin_layout Plain Layout
@@ -443,58 +293,6 @@ ganttlink{elem4}{elem5}
 
 \begin_layout Plain Layout
 
-	
-\backslash
-ganttlink{elem5}{elem6}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem6}{elem7}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem8}{elem9}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem9}{elem10}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem10}{elem11}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem4}{elem12}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem7}{elem12}
-\end_layout
-
-\begin_layout Plain Layout
-
-	
-\backslash
-ganttlink{elem11}{elem12}
 \end_layout
 
 \begin_layout Plain Layout
@@ -523,7 +321,7 @@ end{center}
 
 
 \backslash
-caption{Gantt Chart of Major Work for Spring Term} 
+caption{Gantt Chart of Major ROS Work for Spring Term} 
 \end_layout
 
 \begin_layout Plain Layout
