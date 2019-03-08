@@ -1,4 +1,4 @@
-function [problem,guess] = MultiAgentQUAVProblemNewt
+function [problem,guess] = MultiAgentQUAVProblemNewtRestricted
 %SingleAgentQUAV Control (Double Integrator Minimum Actuator Effort Squared Repositioning) Problem
 %
 % The problem was adapted from Example 4.11 from
@@ -21,78 +21,72 @@ function [problem,guess] = MultiAgentQUAVProblemNewt
 % iclocs@imperial.ac.uk
 
 %------------- BEGIN CODE --------------
-% Plant parameters
-%m_ag = 0.81;
-m_pl = 20;
-gc = 9.81;
-
 % Plant model name, used for Adigator
-problem.data.plantmodel = 'MultiAgentQUAVPlantNewt';
+problem.data.plantmodel = 'MultiAgentQUAVPlantNewtRestricted';
 
  
 % Initial time. t0<tf
 problem.time.t0=0;
 
 % Final time. Let tf_min=tf_max if tf is fixed.
-problem.time.tf_min=30;     
-problem.time.tf_max=30; 
-guess.tf=30;
+problem.time.tf_min=20;     
+problem.time.tf_max=20; 
+guess.tf=20;
 
+% Plant parameters
+m_ag = 0.81;
+m_pl = 20;
+gc = 9.81;
 % Parameters bounds. pl=< p <=pu
 problem.parameters.pl=[];
 problem.parameters.pu=[];
 guess.parameters=[];
 
 % Initial conditions for system
-problem.states.x0=[2.1 0 0.4 0 2.2 0 3.2 0 -0.3 0 2.2 0 3.8 0 0.2 0 2.2 0 3 0 0 0 1 0];
+problem.states.x0=[2.1 0 0 0 2.2 0 3 0 0 0 1 0, 3 0 0 0 2.2 0 3.9 0 0 0 2.2 0];
 
 % Initial conditions for system. Bounds if x0 is free s.t. x0l=< x0 <=x0u
-problem.states.x0l=[2.1 0 0.4 0 2.2 0 3.2 0 -0.3 0 2.2 0 3.8 0 0.2 0 2.2 0 3 0 0 0 1 0];
-problem.states.x0u=[2.1 0 0.4 0 2.2 0 3.2 0 -0.3 0 2.2 0 3.8 0 0.2 0 2.2 0 3 0 0 0 1 0];
-
-
+problem.states.x0l=[2.1 0 0 0 2.2 0 3 0 0 0 1 0, 3 0 0 0 2.2 0 3.9 0 0 0 2.2 0];
+problem.states.x0u=[2.1 0 0 0 2.2 0 3 0 0 0 1 0, 3 0 0 0 2.2 0 3.9 0 0 0 2.2 0];
 
 % State bounds. xl=< x <=xu
-problem.states.xl=[0 -10 0.4 -10 2.2 -10 0 -10 -0.3 -10 2.2 -10 0 -10 0.2 -10 2.2 -10  1.1 -20 -1 -10 1 -10];
-problem.states.xu=[10 10 0.4 10 2.2 10 10 10 -0.3 10 2.2 10 10 10 0.2 10 2.2 10  7.8 10 1 10 2 10];
-
+problem.states.xl=[0 -20 0 0 2.2 -20 0 0 0 0 0.5 -20, 0 -20 0 0 2.2 -20 0 -20 0 0 2.2 -20];
+problem.states.xu=[35 20 0 0 2.2 20 35 20 0 0 1.5 20, 35 20 0 0 2.2 20 35 20 0 0 2.2 20];
 
 % State error bounds
-problem.states.xErrorTol=(1e-2)*ones(1,24);
-
+problem.states.xErrorTol=(1e-1)*ones(1,24);
 
 % State constraint error bounds
-problem.states.xConstraintTol=(1e-2)*ones(1,24);
-
+problem.states.xConstraintTol=(1e-1)*ones(1,24);
 
 % Terminal state bounds. xfl=< xf <=xfu
-problem.states.xfl=[5.1 0 0.4 0 2.2 0 6.2 0 -0.3 0 2.2 0 6.8 0 0.2 0 2.2 0 6 0 0 0 1 0];
-problem.states.xfu=[5.1 0 0.4 0 2.2 0 6.2 0 -0.3 0 2.2 0 6.8 0 0.2 0 2.2 0 6 0 0 0 1 0];
+problem.states.xfl=[5.1 -20 0 0 2.2 -20 0 -20 0 0 1 -20,6 -20 0 0 2.2 -20 6.9 -20 0 0 2.2 -20 ];
+problem.states.xfu=[5.1 20 0 0 2.2 20 12 20 0 0 1 20,   6 20 0 0 2.2 20 6.9 0 20 0 2.2 20 ];
 
 % Guess the state trajectories with [x0 xf]
 guess.states(:,1)=[2.1 5.1];
 guess.states(:,2)=[0 0];
-guess.states(:,3)=[0.4 0.4];
+guess.states(:,3)=[0 0];
 guess.states(:,4)=[0 0];
 guess.states(:,5)=[2.2 2.2];
 guess.states(:,6)=[0 0];
-guess.states(:,7)=[3.2 6.2];
+guess.states(:,7)=[3 6];
 guess.states(:,8)=[0 0];
-guess.states(:,9)=[-0.3 -0.3];
+guess.states(:,9)=[0 0];
 guess.states(:,10)=[0 0];
-guess.states(:,11)=[2.2 2.2];
+guess.states(:,11)=[1 1];
 guess.states(:,12)=[0 0];
-guess.states(:,13)=[3.8 6.8];
+guess.states(:,13)=[3 6];
 guess.states(:,14)=[0 0];
-guess.states(:,15)=[0.2 0.2];
+guess.states(:,15)=[0 0];
 guess.states(:,16)=[0 0];
 guess.states(:,17)=[2.2 2.2];
 guess.states(:,18)=[0 0];
-guess.states(:,19)=[3 6];
+guess.states(:,19)=[3.9 6.9];
 guess.states(:,20)=[0 0];
 guess.states(:,21)=[0 0];
 guess.states(:,22)=[0 0];
-guess.states(:,23)=[1 1];
+guess.states(:,23)=[2.2 2.2];
 guess.states(:,24)=[0 0];
 
 % Number of control actions N 
@@ -101,49 +95,47 @@ guess.states(:,24)=[0 0];
 % by the  number of control actions N whenever it is not zero.
 
 problem.inputs.N=0;
+% Bounds on first control action
+cc = (m_ag+m_pl/3)*gc;
+problem.inputs.u0l=[-10 -10 0,  m_pl*gc/3 m_pl*gc/3  m_pl*gc/3   0 0 0 0 0 0, -10 -10 0 -10 -10 0];%[-10 -10 0 m_pl*gc/3 m_pl*gc/3 m_pl*gc/3 0 0 0 0 0 0, -10 -10 0 -10 -10 0];
+problem.inputs.u0u=[ 10 10 cc,  m_pl*gc/3 m_pl*gc/3  m_pl*gc/3   0 0 0 0 0 0, 10 10 cc 10 10 cc];
 
 % Input bounds
-problem.inputs.ul=[-5 -5 -10 -5 -5 -10 -5 -5 -10 -m_pl*gc, -m_pl*gc, -m_pl*gc, -0.52, -0.52, -0.52, -0.52, -0.52, -0.52, -0.52, -0.52, -0.52];
-problem.inputs.uu=[10 10 30 10 10 30 10 10 30 0, 0, 0, 0.52, 0.52, 0.52, 0.52, 0.52, 0.52, 0.52, 0.52, 0.52];
+problem.inputs.ul=[-10 -10 0,m_pl*gc/3         m_pl*gc/3   m_pl*gc/3    -0.75 -0.75 -0.75 -0.75 -0.75 -0.75, -10 -10 0 -10 -10 0];
+problem.inputs.uu=[10 10 cc, m_pl*gc/3         m_pl*gc/3   m_pl*gc/3    0.75  0.75  0.75  0.75  0.75  0.75, 10 10 cc 10 10 cc];%[10 10 cc, m_pl*gc   m_pl*gc   m_pl*gc   0.5  0.5  0.5  0.5  0.5  0.5, 10 10 cc 10 10 cc];
 
-% Bounds on first control action
-problem.inputs.u0l=[-10 -10 0 -10 -10 0 -10 -10 0 -m_pl*gc/3, -m_pl*gc/3, -m_pl*gc/3, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-problem.inputs.u0u=[10 10 20 10 10 20 10 10 20 -m_pl*gc/3, -m_pl*gc/3, -m_pl*gc/3, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
 
 % Input constraint error bounds
-problem.inputs.uConstraintTol=0.1*ones(1,21);
+problem.inputs.uConstraintTol= 0.1*ones(1,18);
 
 % Guess the input sequences with [u0 uf]
-guess.inputs(:,1)=[0 0];
+guess.inputs(:,1)=[1 -1]; %u_x1
 guess.inputs(:,2)=[0 0];
-guess.inputs(:,3)=[9.81 9.81];
-guess.inputs(:,4)=[0 0];
-guess.inputs(:,5)=[0 0];
-guess.inputs(:,6)=[9.81 9.81];
-guess.inputs(:,7)=[0 0];
-guess.inputs(:,8)=[0 0];
-guess.inputs(:,9)=[9.81 9.81];
-guess.inputs(:,10)=[-m_pl*gc/3, -m_pl*gc/3];
-guess.inputs(:,11)=[-m_pl*gc/3, -m_pl*gc/3];
-guess.inputs(:,12)=[-m_pl*gc/3, -m_pl*gc/3];
-guess.inputs(:,13)=[0 0];
+guess.inputs(:,3)=[cc cc];
+guess.inputs(:,4)=[m_pl*gc/3 m_pl*gc/3]; %F_1
+guess.inputs(:,5)=[m_pl*gc/3 m_pl*gc/3]; %F_2
+guess.inputs(:,6)=[m_pl*gc/3 m_pl*gc/3]; %F_3
+guess.inputs(:,7)=[-0.75 0.75]; %t_a1
+guess.inputs(:,8)=[-0.75 0.75];
+guess.inputs(:,9)=[-0.75 0.75]; %t_a2
+guess.inputs(:,10)=[-0.75 0.75];
+guess.inputs(:,11)=[-0.75 0.75]; %t_a3
+guess.inputs(:,12)=[-0.75 0.75];
+guess.inputs(:,13)=[1 -1]; %u_x2
 guess.inputs(:,14)=[0 0];
-guess.inputs(:,15)=[0 0];
-guess.inputs(:,16)=[0 0];
+guess.inputs(:,15)=[cc cc];
+guess.inputs(:,16)=[1 -1]; %u_x3
 guess.inputs(:,17)=[0 0];
-guess.inputs(:,18)=[0 0];
-guess.inputs(:,19)=[0 0];
-guess.inputs(:,20)=[0 0];
-guess.inputs(:,21)=[0 0];
+guess.inputs(:,18)=[cc cc];
 
 % Choose the set-points if required
 problem.setpoints.states=[];
 problem.setpoints.inputs=[];
 
 % Bounds for path constraint function gl =< g(x,u,p,t) =< gu
-problem.constraints.gl=[0,0,0,0,0,0,0,0,0,0];%1;
-problem.constraints.gu=[0,0,0,0,0,0,0,0,0,0];%inf;
-problem.constraints.gTol=(1e-6)*ones(1,10);%[1e-6];
+problem.constraints.gl=[0,0,0,0,0,0,0];
+problem.constraints.gu=[0,0,0,0,0,0,0];
+problem.constraints.gTol=(1e-2)*ones(1,7);
 
 % Bounds for boundary constraints bl =< b(x0,xf,u0,uf,p,t0,tf) =< bu
 problem.constraints.bl=[];
@@ -188,15 +180,21 @@ function stageCost=L_unscaled(x,xr,u,ur,p,t,vdat)
 %          Example: stageCost = 0*t;
 
 %------------- BEGIN CODE --------------
+% u1 = u(:,1);
+% u2 = u(:,2);
+% u3 = u(:,3);
+% stageCost = u1.*u1+u2.*u2+u3.*u3;
+
 u1 = u(:,1);
 u2 = u(:,2);
 u3 = u(:,3);
-u4 = u(:,4);
-u5 = u(:,5);
-u6 = u(:,6);
-u7 = u(:,7);
-u8 = u(:,8);
-u9 = u(:,9);
+u4 = u(:,13);
+u5 = u(:,14);
+u6 = u(:,15);
+u7 = u(:,16);
+u8 = u(:,17);
+u9 = u(:,18);
+
 stageCost = u1.*u1+u2.*u2+u3.*u3+u4.*u4+u5.*u5+u6.*u6+u7.*u7+u8.*u8+u9.*u9;
 
 %------------- END OF CODE --------------
@@ -262,60 +260,80 @@ g = 9.81;
 u_x1=u(:,1);
 u_y1=u(:,2);
 u_z1=u(:,3);
-u_x2=u(:,4);
-u_y2=u(:,5);
-u_z2=u(:,6);
-u_x3=u(:,7);
-u_y3=u(:,8);
-u_z3=u(:,9);
-F_1 = u(:,10);
-F_2 = u(:,11);
-F_3 = u(:,12);
-a_1 = u(:,16);
-b_1 = u(:,17);
-a_2 = u(:,18);
-b_2 = u(:,19);
-a_3 = u(:,20);
-b_3 = u(:,21);
+F_1 = u(:,4);
+F_2 = u(:,5);
+F_3 = u(:,6);
+ta_1 = u(:,7);
+tb_1 = u(:,8);
+ta_2 = u(:,9);
+tb_2 = u(:,10);
+ta_3 = u(:,11);
+tb_3 = u(:,12);
+u_x2=u(:,13);
+u_y2=u(:,14);
+u_z2=u(:,15);
+u_x3=u(:,16);
+u_y3=u(:,17);
+u_z3=u(:,18);
 
 x1dot = x(:,2);
 y1dot = x(:,4);
 z1dot = x(:,6);
-x2dot = x(:,8);
-y2dot = x(:,10);
-z2dot = x(:,12);
-x3dot = x(:,14);
-y3dot = x(:,16);
-z3dot = x(:,18);
-xcomdot = x(:,20);
-ycomdot = x(:,22);
-zcomdot = x(:,24);
+xcomdot = x(:,8);
+ycomdot = x(:,10);
+zcomdot = x(:,12);
+x2dot = x(:,14);
+y2dot = x(:,16);
+z2dot = x(:,18);
+x3dot = x(:,20);
+y3dot = x(:,22);
+z3dot = x(:,24);
 
-dx(:,1) = x1dot; %x1.
-dx(:,2) = (1/m_ag)*(u_x1-F_1.*tan(a_1)); %x1..
-dx(:,3) = y1dot; %y1.
-dx(:,4) = (1/m_ag)*(u_y1 - F_1.*tan(b_1)); %y1..
-dx(:,5) = z1dot; %z1.
-dx(:,6) = (1/m_ag)*(u_z1 - F_1 - m_ag*g); %z1..
-dx(:,7) = x2dot; %x2.
-dx(:,8) = (1/m_ag)*(u_x2 - F_2.*tan(a_2)); %x2..
-dx(:,9) = y2dot; %y2.
-dx(:,10) = (1/m_ag)*(u_y2 - F_2.*tan(b_2)); %y2..
-dx(:,11) = z2dot; %z2.
-dx(:,12) = (1/m_ag)*(u_z2 - F_2 - m_ag*g); %z2..
-dx(:,13) = x3dot; %x3.
-dx(:,14) = (1/m_ag)*(u_x3 - F_3.*tan(a_3)); %x3..
-dx(:,15) = y3dot; %y3.
-dx(:,16) = (1/m_ag)*(u_y3 - F_3.*tan(b_3)); %y3..
-dx(:,17) = z3dot; %z3.
-dx(:,18) = (1/m_ag)*(u_z3 - F_3 - m_ag*g); %z3..
-dx(:,19) =  xcomdot;%xcom.
-dx(:,20) =  (1/m_pl)*(u_x1+u_x2+u_x3 - m_ag.*(dx(:,2)+dx(:,8)+dx(:,14)));%xcom..
-dx(:,21) =  ycomdot;%ycom.
-dx(:,22) =  (1/m_pl)*(u_y1+u_y2+u_y3 - m_ag.*(dx(:,4)+dx(:,10)+dx(:,16)));%ycom..
-dx(:,23) =  zcomdot;%zcom.
-dx(:,24) =  (1/m_pl)*(u_z1+u_z2+u_z3 - m_ag.*(dx(:,6)+dx(:,12)+dx(:,18) - 3*g));%zcom..
-0;
+dx(:,1) =  x1dot; %x1.
+dx(:,2) =  (1/m_ag)*(u_x1 -F_1.*ta_1); %x1..
+dx(:,3) =  y1dot; %y1.
+dx(:,4) =  (1/m_ag)*(u_y1 -F_1.*tb_1); %y1..
+dx(:,5) =  z1dot; %z1.
+dx(:,6) =  (1/m_ag)*(u_z1 -F_1 -m_ag*g); %z1..
+dx(:,7) =  xcomdot;%xcom.
+dx(:,8) =  (1/m_pl)*(F_1.*ta_1+F_2.*ta_2+F_3.*ta_3);%xcom..
+dx(:,9) =  ycomdot;%ycom.
+dx(:,10) = (1/m_pl)*(F_1.*tb_1+F_2.*tb_2+F_3.*tb_3);%ycom..
+dx(:,11) = zcomdot;%zcom.
+dx(:,12) = (1/m_pl)*(F_1+F_2+F_3 - m_pl.*g);%zcom..
+
+dx(:,13) =  x2dot; %x2.
+dx(:,14) =  (1/m_ag)*(u_x2 -F_2.*ta_2); %x2..
+dx(:,15) =  y2dot; %y2.
+dx(:,16) =  (1/m_ag)*(u_y2 -F_2.*tb_2) ;%y2..
+dx(:,17) =  z2dot; %z2.
+dx(:,18) =  (1/m_ag)*(u_z2 - F_2 - m_ag*g);%z2..
+
+dx(:,19) =  x3dot; %x3.
+dx(:,20) =  (1/m_ag)*(u_x3 -F_3.*ta_3) ;%x3..
+dx(:,21) =  y3dot; %y3.
+dx(:,22) =  (1/m_ag)*(u_y3 -F_3.*tb_3) ;%y3..
+dx(:,23) =  z3dot; %z3.
+dx(:,24) =  (1/m_ag)*(u_z3  -F_3 -m_ag*g);%z3..
+
+
+% m_ag = 0.81;
+% g = 9.81;
+% 
+% u_x1=u(:,1);
+% u_y1=u(:,2);
+% u_z1=u(:,3);
+% 
+% x1dot = x(:,2);
+% y1dot = x(:,4);
+% z1dot = x(:,6);
+% 
+% dx(:,1) = x1dot; %x1.
+% dx(:,2) = u_x1 ; %x1..
+% dx(:,3) = y1dot; %y1.
+% dx(:,4) = u_y1 ; %y1..
+% dx(:,5) = z1dot; %z1.
+% dx(:,6) = u_z1 - m_ag.*g;%z1..
 
 %------------- END OF CODE --------------
 
@@ -344,80 +362,119 @@ function c=g_unscaled(x,u,p,t,vdat)
 m_pl = 20;
 g = 9.81;
 
-F_1 = u(:,10);
-F_2 = u(:,11);
-F_3 = u(:,12);
-phi= u(:,13);
-theta= u(:,14);
-psi= u(:,15);
-a_1 = u(:,16);
-b_1 = u(:,17);
-a_2 = u(:,18);
-b_2 = u(:,19);
-a_3 = u(:,20);
-b_3 = u(:,21);
+F_1 = u(:,4);
+F_2 = u(:,5);
+F_3 = u(:,6);
+ta_1 = u(:,7);
+tb_1 = u(:,8);
+ta_2 = u(:,9);
+tb_2 = u(:,10);
+ta_3 = u(:,11);
+tb_3 = u(:,12);
 
 x1 = x(:,1);
 y1 = x(:,3);
 z1 = x(:,5);
-x2 = x(:,7);
-y2 = x(:,9);
-z2 = x(:,11);
-x3 = x(:,13);
-y3 = x(:,15);
-z3 = x(:,17);
-xcom = x(:,19);
-ycom = x(:,21);
-zcom = x(:,23);
+xcom = x(:,7);
+ycom = x(:,9);
+zcom = x(:,11);
+x2 = x(:,13);
+y2 = x(:,15);
+z2 = x(:,17);
+x3 = x(:,19);
+y3 = x(:,21);
+z3 = x(:,23);
+
+ac_1 = x1 - (xcom-0.9);
+ac_2 = x2 - xcom;
+ac_3 = x3 - (xcom+0.9);
+bc_1 = y1 - ycom;
+bc_2 = y2 - ycom;
+bc_3 = y3 - ycom;
+cc_1 = z1 - (zcom+0.05);
+cc_2 = z2 - (zcom+0.05);
+cc_3 = z3 - (zcom+0.05);
+
+c=[ta_1-ac_1./cc_1, tb_1-bc_1./cc_1, ta_2-ac_2./cc_2, tb_2-bc_2./cc_2, ta_3-ac_3./cc_3, tb_3-bc_3./cc_3,   F_1+F_2+F_3-m_pl*g];
+
+% m_pl = 20;
+% g = 9.81;
+% 
+% F_1 = u(:,10);
+% F_2 = u(:,11);
+% F_3 = u(:,12);
+% ta_1 = u(:,13);
+% tb_1 = u(:,14);
+% ta_2 = u(:,15);
+% tb_2 = u(:,16);
+% ta_3 = u(:,17);
+% tb_3 = u(:,18);
+% 
+% x1 = x(:,1);
+% y1 = x(:,3);
+% z1 = x(:,5);
+% % x2 = x(:,7);
+% % y2 = x(:,9);
+% % z2 = x(:,11);
+% % x3 = x(:,13);
+% % y3 = x(:,15);
+% % z3 = x(:,17);
+% xcom = x(:,19);
+% ycom = x(:,21);
+% zcom = x(:,23);
+% 
+
+% 
+% c=[F_1+F_2+F_3-m_pl*g, ta_1-ac_1./cc_1, tb_1-bc_1./cc_1, ta_2, tb_2, ta_3, tb_3];
 
 %problematic
 %RETHINK NEED TO PERFORM ALL OF THESE CALCULATIONS - ISSUE WITH RESHAPE
-N = size(phi,1);
+% N = size(phi,1);
 
-Rphi = kron(eye(N),[1,0,0;0,0,0;0,0,0]) + kron(eye(N),[0,0,0;0,1,0;0,0,1])*kron(diag(cos(phi)),eye(3))+kron(eye(N),[0,0,0;0,0,-1;0,1,0])*kron(diag(sin(phi)),eye(3));
-% Rphi = [1,0,0;0,cos(phi),-sin(phi);0,sin(phi),cos(phi)];
-Rtheta = kron(eye(N),[0,0,0;0,1,0;0,0,0]) + kron(eye(N),[1,0,0;0,0,0;0,0,1])*kron(diag(cos(theta)),eye(3))+kron(eye(N),[0,0,1;0,0,0;-1,0,0])*kron(diag(sin(theta)),eye(3));
-% Rtheta = [cos(theta),0,sin(theta);0,1,0;-sin(theta),0,cos(theta)];
-Rpsi = kron(eye(N),[0,0,0;0,0,0;0,0,1]) + kron(eye(N),[1,0,0;0,1,0;0,0,0])*kron(diag(cos(psi)),eye(3)) + kron(eye(N),[0,-1,0;1,0,0;0,0,0])*kron(diag(sin(psi)),eye(3));
-% Rpsi = [cos(psi),-sin(psi),0;sin(psi),cos(psi),0;0,0,1];
-R = kron(ones(1,N),eye(3))*Rphi*Rtheta*Rpsi; %Rphi*Rtheta*Rpsi;
+% Rphi = kron(eye(N),[1,0,0;0,0,0;0,0,0]) + kron(eye(N),[0,0,0;0,1,0;0,0,1])*kron(diag(cos(phi)),eye(3))+kron(eye(N),[0,0,0;0,0,-1;0,1,0])*kron(diag(sin(phi)),eye(3));
+% % Rphi = [1,0,0;0,cos(phi),-sin(phi);0,sin(phi),cos(phi)];
+% Rtheta = kron(eye(N),[0,0,0;0,1,0;0,0,0]) + kron(eye(N),[1,0,0;0,0,0;0,0,1])*kron(diag(cos(theta)),eye(3))+kron(eye(N),[0,0,1;0,0,0;-1,0,0])*kron(diag(sin(theta)),eye(3));
+% % Rtheta = [cos(theta),0,sin(theta);0,1,0;-sin(theta),0,cos(theta)];
+% Rpsi = kron(eye(N),[0,0,0;0,0,0;0,0,1]) + kron(eye(N),[1,0,0;0,1,0;0,0,0])*kron(diag(cos(psi)),eye(3)) + kron(eye(N),[0,-1,0;1,0,0;0,0,0])*kron(diag(sin(psi)),eye(3));
+% % Rpsi = [cos(psi),-sin(psi),0;sin(psi),cos(psi),0;0,0,1];
+% R = kron(ones(1,N),eye(3))*Rphi*Rtheta*Rpsi; %Rphi*Rtheta*Rpsi;
 
-x_d1 = -0.9;
-y_d1 = 0.4;
-z_d1 = 0.05;
-x_d2 = 0.2;
-y_d2 =-0.3;
-z_d2 = 0.05;
-x_d3 = 0.8;
-y_d3 = 0.2;
-z_d3 = 0.05;
-pd1 = [x_d1;y_d1;z_d1];
-pd2 = [x_d2;y_d2;z_d2];
-pd3 = [x_d3;y_d3;z_d3];
-pcom = [xcom';ycom';zcom']';%kron(xcom,[1;0;0])+kron(ycom,[0;1;0])+kron(zcom,[0;0;1]);%[xcom;ycom;zcom];
-p1 = pcom + (R*kron(ones(N,N),pd1))';%R*pd1;%
-p2 = pcom + (R*kron(ones(N,N),pd2))';%R*pd2;%
-p3 = pcom + (R*kron(ones(N,N),pd3))';%R*pd3;%
+% x_d1 = -0.9;
+% y_d1 = 0.4;
+% z_d1 = 0.05;
+% x_d2 = 0.2;
+% y_d2 =-0.3;
+% z_d2 = 0.05;
+% x_d3 = 0.8;
+% y_d3 = 0.2;
+% z_d3 = 0.05;
+% pd1 = [x_d1,y_d1,z_d1];
+% pd2 = [x_d2,y_d2,z_d2];
+% pd3 = [x_d3,y_d3,z_d3];
+% pcom = [xcom';ycom';zcom']';%kron(xcom,[1;0;0])+kron(ycom,[0;1;0])+kron(zcom,[0;0;1]);%[xcom;ycom;zcom];
+% p1 = pcom + kron(ones(N,1),pd1); %(R*kron(ones(N,N),pd1))';%R*pd1;%
+% p2 = pcom + kron(ones(N,1),pd2); %(R*kron(ones(N,N),pd2))';%R*pd2;%
+% p3 = pcom + kron(ones(N,1),pd3); %(R*kron(ones(N,N),pd3))';%R*pd3;%
 
-ac_1 = x1 - p1*[1; 0; 0];%dot([1 0 0],p1);%[1 0 0]*p1;%
-ac_2 = x2 - p2*[1; 0; 0];%dot([1 0 0],p2);%[1 0 0]*p2;%
-ac_3 = x3 - p3*[1; 0; 0];%dot([1 0 0],p3);%[1 0 0]*p3;%
-bc_1 = y1 - p1*[0; 1; 0];%dot([0 1 0],p1);%[0 1 0]*p1;%
-bc_2 = y2 - p2*[0; 1; 0];%dot([0 1 0],p2);%[0 1 0]*p2;%
-bc_3 = y3 - p3*[0; 1; 0];%dot([0 1 0],p3);%[0 1 0]*p3;%
-cc_1 = z1 - p1*[0; 0; 1];%;dot([0 0 1],p1);%[0 0 1]*p1;%
-cc_2 = z2 - p2*[0; 0; 1];%dot([0 0 1],p2);%[0 0 1]*p2;%
-cc_3 = z3 - p3*[0; 0; 1];%dot([0 0 1],p3);%[0 0 1]*p3;%
+% ac_1 = x1 - xcom;%p1*[1; 0; 0];%dot([1 0 0],p1);%[1 0 0]*p1;%
+% ac_2 = x2 - xcom;%p2*[1; 0; 0];%dot([1 0 0],p2);%[1 0 0]*p2;%
+% ac_3 = x3 - xcom;%p3*[1; 0; 0];%dot([1 0 0],p3);%[1 0 0]*p3;%
+% bc_1 = y1 - ycom;%p1*[0; 1; 0];%dot([0 1 0],p1);%[0 1 0]*p1;%
+% bc_2 = y2 - ycom;%p2*[0; 1; 0];%dot([0 1 0],p2);%[0 1 0]*p2;%
+% bc_3 = y3 - ycom;%p3*[0; 1; 0];%dot([0 1 0],p3);%[0 1 0]*p3;%
+% cc_1 = z1 - zcom;%p1*[0; 0; 1];%;dot([0 0 1],p1);%[0 0 1]*p1;%
+% cc_2 = z2 - zcom;%p2*[0; 0; 1];%dot([0 0 1],p2);%[0 0 1]*p2;%
+% cc_3 = z3 - zcom;%p3*[0; 0; 1];%dot([0 0 1],p3);%[0 0 1]*p3;%
 
-u = p1-p2;
-v = p1-p3;
-Nr = cross(u,v)';
-Nx = Nr(1,:);
-Ny = Nr(2,:);
-Nz = Nr(3,:);
+% u = p1-p2;
+% v = p1-p3;
+% Nr = cross(u,v)';
+% Nx = Nr(1,:);
+% Ny = Nr(2,:);
+% Nz = Nr(3,:);
 
 % c=[F_1+F_2+F_3-m_pl*g, phi-atan(Ny./Nx), theta-atan(Nz./Nx), psi-atan(Nz./Ny), a_1-atan(ac_1./cc_1), b_1-atan(bc_1./cc_1), a_2-atan(ac_2./cc_2), b_2-atan(bc_2./cc_2), a_3-atan(ac_3./cc_3), b_3-atan(bc_3./cc_3)];
-c=[F_1+F_2+F_3-m_pl*g, phi, theta, psi, a_1-atan(ac_1./cc_1), b_1-atan(bc_1./cc_1), a_2-atan(ac_2./cc_2), b_2-atan(bc_2./cc_2), a_3-atan(ac_3./cc_3), b_3-atan(bc_3./cc_3)];
+% c=[F_1+F_2+F_3-m_pl*g, ta_1-ac_1./cc_1, tb_1-bc_1./cc_1, ta_2-ac_2./cc_2, tb_2-bc_2./cc_2, ta_3-ac_3./cc_3, tb_3-bc_3./cc_3];
 %------------- END OF CODE --------------
 
 function bc=b_unscaled(x0,xf,u0,uf,p,t0,tf,vdat,varargin)

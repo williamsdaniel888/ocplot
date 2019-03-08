@@ -106,7 +106,7 @@ options.NLPsolver='ipopt';
 % IPOPT settings (if required)
 options.ipopt.tol=1e-4;                        % Desired convergence tolerance (relative). The default value is  1e-8. 
 options.ipopt.print_level=5;                   % Print level. The valid range for this integer option is [0,12] and its default value is 5.
-options.ipopt.max_iter=100;                   % Maximum number of iterations. The default value is 3000.
+options.ipopt.max_iter=3000;                   % Maximum number of iterations. The default value is 3000.
  
 options.ipopt.mu_strategy ='adaptive';         % Determines which barrier parameter update strategy is to be used. 
                                                % The default value for this string option is "monotone".
