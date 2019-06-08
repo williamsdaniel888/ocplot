@@ -8,13 +8,13 @@
  
 ## Contents of Repository
 
-[Single Agent](/Single Agent): scripts and functions for open-loop and closed-loop simulations relating to the single-agent relocation problem.
+[Single Agent](/SingleAgent): scripts and functions for open-loop and closed-loop simulations relating to the single-agent relocation problem.
 
-[Single Agent with Payload](/Single Agent with Payload): scripts and functions for open-loop and closed-loop simulations relating to the single-agent payload transportation problem.
+[Single Agent with Payload](/SingleAgentPayload): scripts and functions for open-loop and closed-loop simulations relating to the single-agent payload transportation problem.
 
-[CPT Dual Agent](/CPT Dual Agents): scripts and functions for open-loop and closed-loop simulations relating to the dual-agent CPT problem.
+[CPT Dual Agent](/DualAgentCPT): scripts and functions for open-loop and closed-loop simulations relating to the dual-agent CPT problem.
 
-[CPT Triple Agent](/CPT Triple Agents): scripts and functions for open-loop and closed-loop simulations relating to the triple-agent CPT problem.
+[CPT Triple Agent](/TripleAgentCPT): scripts and functions for open-loop and closed-loop simulations relating to the triple-agent CPT problem.
 
 ## Installation
 
