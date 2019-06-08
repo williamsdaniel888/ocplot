@@ -1,4 +1,4 @@
-# A Centralized Multi-Agent Scheme for Cooperative Payload Transportation
+# Multi-Agent Optimal Control for Cooperative Payload Transportation
 
 ## People
 
